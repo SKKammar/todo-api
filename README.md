@@ -74,8 +74,7 @@ curl -i -X DELETE http://localhost:3000/tasks/1
 
 ## 🖥️ Swagger UI Screenshot
 
-![Swagger UI Screenshot](./swagger-screenshot.png)  
-*(Replace this with your actual screenshot – take it at `http://localhost:3000/docs`)*
+![Swagger UI Screenshot](./assets/swagger-screenshot.png)
 
 ---
 
