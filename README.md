@@ -1,7 +1,7 @@
-# ✅ Task API – CRUD To-Do List
+# ✅ Task API – Near Perfect CRUD To-Do List
 
-A simple RESTful API built with **Node.js + Express** that manages a to-do list.  
-You can **C**reate, **R**ead, **U**pdate, and **D**elete tasks — all data is kept in memory (no database, so it resets when the server restarts).
+This repository contains a meticulously crafted, **near-perfect RESTful API** built with **Node.js + Express** that manages a to-do list.  
+You can **C**reate, **R**ead, **U**pdate, and **D**elete tasks following the best practices of API design — all data is kept in memory (no database, so it resets when the server restarts).
 
 ---
 
@@ -40,7 +40,7 @@ Swagger UI (interactive docs) at **http://localhost:3000/docs**
 
 ## 🤖 AI Remake
 
-This repository also includes an `AI remake` folder, which contains an alternative version of the API implemented with the `/task` endpoints.
+This repository also includes an `AI remake` folder. Unlike the rigorously coded main API, this alternative version was created entirely using **simple conversational prompts** based on my understanding and an **AI tool**. It demonstrates how a functional API can be rapidly scaffolded using artificial intelligence.
 
 ### Quick Start for AI Remake
 
