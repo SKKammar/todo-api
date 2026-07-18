@@ -106,9 +106,10 @@ curl -i -X DELETE http://localhost:3000/tasks/1
 
 ## 🧠 Lessons Learned
 
-- **In-memory storage**: data disappears when the server restarts — that's why Week 3 introduces databases.  
-- **Manual OpenAPI spec**: writing it by hand teaches you every detail of your API's contract.  
-- **Validation**: the server must never trust the client; we validate `title` and `done` types.
+- **Contrasting Development Approaches**: Building an API meticulously by hand ensures a deep understanding of core principles, while using AI tools can rapidly scaffold functional prototypes. Both approaches offer immense value in modern development.
+- **In-memory Storage Limits**: Managing data using a simple array is great for learning and prototyping, but it highlights the ephemeral nature of data—since it resets when the server restarts, a persistent database is essential for production environments.
+- **Strict Data Validation**: The server must never implicitly trust client input. Enforcing strict type checks (e.g., verifying `id` is a number, `status` is a boolean) prevents bugs and ensures robust, reliable endpoints.
+- **API Documentation**: Whether writing an OpenAPI specification by hand or utilizing tools to generate a `swagger.json`, maintaining clear documentation is critical for defining the API's contract and facilitating easy testing via Swagger UI.
 
 ---
 
