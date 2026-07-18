@@ -54,13 +54,13 @@ The Swagger UI for the AI Remake is available at **http://localhost:3000/api-doc
 
 ### Endpoints (AI Remake)
 
-| Method | Path           | Description                         |
-| :----- | :------------- | :---------------------------------- |
-| GET    | `/task`        | List all tasks                      |
-| GET    | `/task/:id`    | Get a single task by ID             |
-| POST   | `/task`        | Create a new task                   |
-| PUT    | `/task/:id`    | Update a task (title, status)       |
-| DELETE | `/task/:id`    | Delete a task                       |
+| Method | Path           | Description                         | Status Codes                |
+| :----- | :------------- | :---------------------------------- | :-------------------------- |
+| GET    | `/task`        | List all tasks                      | 200                         |
+| GET    | `/task/:id`    | Get a single task by ID             | 200, 404                    |
+| POST   | `/task`        | Create a new task                   | 201, 400, 409               |
+| PUT    | `/task/:id`    | Update a task (title, status)       | 200, 400, 404               |
+| DELETE | `/task/:id`    | Delete a task                       | 204, 404                    |
 
 ---
 
