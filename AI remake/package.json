@@ -2,9 +2,9 @@
   "name": "ai-remake-todo",
   "version": "1.0.0",
   "description": "Todo API",
-  "main": "index.js",
+  "main": "aiindex.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node aiindex.js"
   },
   "dependencies": {
     "express": "^4.18.2",

@@ -47,7 +47,7 @@ This repository also includes an `AI remake` folder. Unlike the rigorously coded
 ```bash
 cd "AI remake"
 npm install
-node index.js
+node aiindex.js
 ```
 
 The Swagger UI for the AI Remake is available at **http://localhost:3000/api-docs**.
