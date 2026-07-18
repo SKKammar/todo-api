@@ -55,16 +55,19 @@
           },
           "400": {
             "description": "Invalid input"
+          },
+          "409": {
+            "description": "Task with this id already exists"
           }
         }
       }
     },
-    "/tasks1/{id1}": {
+    "/tasks1/{id}": {
       "get": {
-        "summary": "Get a specific task by id1",
+        "summary": "Get a specific task by id",
         "parameters": [
           {
-            "name": "id1",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -92,7 +95,7 @@
         "summary": "Update a task",
         "parameters": [
           {
-            "name": "id1",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -111,7 +114,7 @@
                     "type": "string"
                   },
                   "status": {
-                    "type": "string"
+                    "type": "boolean"
                   }
                 }
               }
@@ -129,6 +132,9 @@
               }
             }
           },
+          "400": {
+            "description": "Invalid input"
+          },
           "404": {
             "description": "Task not found"
           }
@@ -138,7 +144,7 @@
         "summary": "Delete a task",
         "parameters": [
           {
-            "name": "id1",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -162,21 +168,21 @@
       "Task": {
         "type": "object",
         "required": [
-          "id1",
+          "id",
           "title",
           "status"
         ],
         "properties": {
-          "id1": {
+          "id": {
             "type": "string",
-            "description": "The unique identifier of the task"
+            "description": "The unique identifier of the task (Primary Key)"
           },
           "title": {
             "type": "string",
             "description": "The title of the task"
           },
           "status": {
-            "type": "string",
+            "type": "boolean",
             "description": "The status of the task"
           }
         }

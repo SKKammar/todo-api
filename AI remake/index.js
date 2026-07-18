@@ -12,44 +12,67 @@ let tasks = [];
 
 // Create a task
 app.post('/tasks1', (req, res) => {
-    const { id1, title, status } = req.body;
-    if (!id1 || !title || !status) {
-        return res.status(400).json({ error: 'id1, title, and status are required' });
+    const { id, title, status } = req.body;
+    if (id === undefined || title === undefined || status === undefined) {
+        return res.status(400).json({ error: 'id, title, and status are required' });
     }
-    const newTask = { id1, title, status };
+    if (typeof status !== 'boolean') {
+        return res.status(400).json({ error: 'status must be a boolean' });
+    }
+    if (typeof title !== 'string') {
+        return res.status(400).json({ error: 'title must be a string' });
+    }
+    // Check for primary key constraint (id must be unique)
+    if (tasks.find(t => t.id === id)) {
+        return res.status(409).json({ error: 'Task with this id already exists' });
+    }
+    
+    const newTask = { id, title, status };
     tasks.push(newTask);
     res.status(201).json(newTask);
 });
 
-// Read details from task1
-app.get('/tasks1/:id1', (req, res) => {
-    const task = tasks.find(t => t.id1 === req.params.id1);
+// Read details from a task
+app.get('/tasks1/:id', (req, res) => {
+    // using loose equality in case id is sent as a string in params but stored as a number
+    const task = tasks.find(t => t.id == req.params.id);
     if (!task) {
         return res.status(404).json({ error: 'Task not found' });
     }
     res.json(task);
 });
 
-// Read all tasks (helpful for testing)
+// Read all tasks
 app.get('/tasks1', (req, res) => {
     res.json(tasks);
 });
 
 // Update a task (title, status)
-app.put('/tasks1/:id1', (req, res) => {
-    const task = tasks.find(t => t.id1 === req.params.id1);
+app.put('/tasks1/:id', (req, res) => {
+    const task = tasks.find(t => t.id == req.params.id);
     if (!task) {
         return res.status(404).json({ error: 'Task not found' });
     }
+    
     const { title, status } = req.body;
-    if (title !== undefined) task.title = title;
-    if (status !== undefined) task.status = status;
+    if (title !== undefined) {
+        if (typeof title !== 'string') {
+            return res.status(400).json({ error: 'title must be a string' });
+        }
+        task.title = title;
+    }
+    if (status !== undefined) {
+        if (typeof status !== 'boolean') {
+            return res.status(400).json({ error: 'status must be a boolean' });
+        }
+        task.status = status;
+    }
     res.json(task);
 });
 
 // Delete a task
-app.delete('/tasks1/:id1', (req, res) => {
-    const taskIndex = tasks.findIndex(t => t.id1 === req.params.id1);
+app.delete('/tasks1/:id', (req, res) => {
+    const taskIndex = tasks.findIndex(t => t.id == req.params.id);
     if (taskIndex === -1) {
         return res.status(404).json({ error: 'Task not found' });
     }
