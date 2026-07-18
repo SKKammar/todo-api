@@ -38,6 +38,32 @@ Swagger UI (interactive docs) at **http://localhost:3000/docs**
 
 ---
 
+## 🤖 AI Remake
+
+This repository also includes an `AI remake` folder, which contains an alternative version of the API implemented with the `/task` endpoints.
+
+### Quick Start for AI Remake
+
+```bash
+cd "AI remake"
+npm install
+node index.js
+```
+
+The Swagger UI for the AI Remake is available at **http://localhost:3000/api-docs**.
+
+### Endpoints (AI Remake)
+
+| Method | Path           | Description                         |
+| :----- | :------------- | :---------------------------------- |
+| GET    | `/task`        | List all tasks                      |
+| GET    | `/task/:id`    | Get a single task by ID             |
+| POST   | `/task`        | Create a new task                   |
+| PUT    | `/task/:id`    | Update a task (title, status)       |
+| DELETE | `/task/:id`    | Delete a task                       |
+
+---
+
 ## 🧪 Example `curl` Commands
 
 ### Create a task
