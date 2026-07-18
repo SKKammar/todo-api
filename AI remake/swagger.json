@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "/tasks1": {
+    "/task": {
       "get": {
         "summary": "Get all tasks",
         "responses": {
@@ -62,7 +62,7 @@
         }
       }
     },
-    "/tasks1/{id}": {
+    "/task/{id}": {
       "get": {
         "summary": "Get a specific task by id",
         "parameters": [

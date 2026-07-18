@@ -11,7 +11,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 let tasks = [];
 
 // Create a task
-app.post('/tasks1', (req, res) => {
+app.post('/task', (req, res) => {
     const { id, title, status } = req.body;
     if (id === undefined || title === undefined || status === undefined) {
         return res.status(400).json({ error: 'id, title, and status are required' });
@@ -33,7 +33,7 @@ app.post('/tasks1', (req, res) => {
 });
 
 // Read details from a task
-app.get('/tasks1/:id', (req, res) => {
+app.get('/task/:id', (req, res) => {
     // using loose equality in case id is sent as a string in params but stored as a number
     const task = tasks.find(t => t.id == req.params.id);
     if (!task) {
@@ -43,12 +43,12 @@ app.get('/tasks1/:id', (req, res) => {
 });
 
 // Read all tasks
-app.get('/tasks1', (req, res) => {
+app.get('/task', (req, res) => {
     res.json(tasks);
 });
 
 // Update a task (title, status)
-app.put('/tasks1/:id', (req, res) => {
+app.put('/task/:id', (req, res) => {
     const task = tasks.find(t => t.id == req.params.id);
     if (!task) {
         return res.status(404).json({ error: 'Task not found' });
@@ -71,7 +71,7 @@ app.put('/tasks1/:id', (req, res) => {
 });
 
 // Delete a task
-app.delete('/tasks1/:id', (req, res) => {
+app.delete('/task/:id', (req, res) => {
     const taskIndex = tasks.findIndex(t => t.id == req.params.id);
     if (taskIndex === -1) {
         return res.status(404).json({ error: 'Task not found' });
