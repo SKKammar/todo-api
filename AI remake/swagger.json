@@ -71,7 +71,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
@@ -99,7 +99,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
@@ -148,7 +148,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
@@ -174,7 +174,7 @@
         ],
         "properties": {
           "id": {
-            "type": "string",
+            "type": "integer",
             "description": "The unique identifier of the task (Primary Key)"
           },
           "title": {

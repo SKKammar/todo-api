@@ -19,6 +19,9 @@ app.post('/task', (req, res) => {
     if (typeof status !== 'boolean') {
         return res.status(400).json({ error: 'status must be a boolean' });
     }
+    if (typeof id !== 'number') {
+        return res.status(400).json({ error: 'id must be a number' });
+    }
     if (typeof title !== 'string') {
         return res.status(400).json({ error: 'title must be a string' });
     }
