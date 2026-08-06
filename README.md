@@ -124,3 +124,28 @@ curl -i -X DELETE http://localhost:3000/tasks/1
 ## 📦 Author
 
 Santosh – [SKKammar](https://github.com/SKKammar)
+
+---
+
+## Storage & Database Setup
+
+This API uses a SQLite database instead of in-memory storage. 
+
+**Why SQLite?**
+SQLite was chosen because it requires zero configuration, operates entirely out of a single local file (`tasks.db`), and requires no separate background server process to be installed. It guarantees that our data persists and survives server restarts.
+
+**Getting Started:**
+To start this project locally, simply clone the repository, install dependencies, and start the server. The `tasks.db` file and the `tasks` table will be created and seeded automatically.
+
+1. `npm install`
+2. `node index.js`
+
+**Database File:**
+The database is stored locally in `tasks.db`. **Note:** This file is included in `.gitignore` so that every new clone starts with a fresh, empty database.
+
+**Example SQL Query (Stage 4):**
+I tested modifying the database directly in DB Browser using this query to find only completed tasks:
+`SELECT * FROM tasks WHERE done = 1;` 
+This successfully returned one row (the seeded "Complete FlyRank Stage 0" task).
+
+*(Note: Don't forget to embed a screenshot of your DB Browser view here!)*
