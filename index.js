@@ -1,145 +1,109 @@
-// ============================================================
-// DEPENDENCIES
-// ============================================================
 const express = require('express');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./openapi.json');
+const Database = require('better-sqlite3');
 
 const app = express();
-const port = 3000;
-
-// Middleware to parse JSON request bodies
 app.use(express.json());
 
-// ============================================================
-// STAGE 0 & 1: Hello server + Root & Health endpoints
-// ============================================================
+// ==========================================
+// STAGE 0: Create database & seed data
+// ==========================================
+const db = new Database('tasks.db');
 
-// GET /  – describes the API
-app.get('/', (req, res) => {
-  res.json({
-    name: 'Task API',
-    version: '1.0',
-    endpoints: ['/tasks']
-  });
-});
+db.exec(`
+  CREATE TABLE IF NOT EXISTS tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    done INTEGER NOT NULL DEFAULT 0
+  )
+`);
 
-// GET /health – health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
+const checkEmpty = db.prepare('SELECT COUNT(*) AS count FROM tasks').get();
 
-// ============================================================
-// STAGE 2: In-memory "database" + Read endpoints
-// ============================================================
+if (checkEmpty.count === 0) {
+  const insertTask = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)');
+  insertTask.run('Buy groceries', 0);
+  insertTask.run('Complete FlyRank Stage 0', 1);
+  insertTask.run('Read up on SQL injection', 0);
+  console.log('Seeded database with 3 example tasks.');
+}
 
-// Pre-filled tasks (our "database")
-let tasks = [
-  { id: 1, title: 'Learn Node.js', done: false },
-  { id: 2, title: 'Build a CRUD API', done: false },
-  { id: 3, title: 'Write README', done: true }
-];
-let nextId = 4; // auto-increment ID for new tasks
-
-// GET /tasks – list all tasks
+// ==========================================
+// STAGE 1: Read from the database
+// ==========================================
 app.get('/tasks', (req, res) => {
-  res.json(tasks);
+  const tasks = db.prepare('SELECT * FROM tasks').all();
+  res.status(200).json(tasks);
 });
 
-// GET /tasks/:id – get a single task by ID
 app.get('/tasks/:id', (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const task = tasks.find(t => t.id === id);
+  const task = db.prepare('SELECT * FROM tasks WHERE id = ?').get(req.params.id);
+  
   if (!task) {
-    return res.status(404).json({ error: `Task ${id} not found` });
+    return res.status(404).json({ error: 'Task not found' });
   }
-  res.json(task);
+  
+  res.status(200).json(task);
 });
 
-// ============================================================
-// STAGE 3: Create (POST) with validation
-// ============================================================
-
-// POST /tasks – create a new task
+// ==========================================
+// STAGE 2: Create new tasks
+// ==========================================
 app.post('/tasks', (req, res) => {
   const { title } = req.body;
-
-  // Validation: title must be a non-empty string
+  
   if (!title || typeof title !== 'string' || title.trim() === '') {
-    return res.status(400).json({
-      error: 'Title is required and must be a non-empty string'
-    });
+    return res.status(400).json({ error: 'Title is required and must be a non-empty string' });
   }
 
-  const newTask = {
-    id: nextId++,
-    title: title.trim(),
-    done: false
-  };
-  tasks.push(newTask);
+  // Insert the task and get the metadata (like the newly generated ID)
+  const info = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)').run(title, 0);
+  
+  // Fetch the newly created task to return it
+  const newTask = db.prepare('SELECT * FROM tasks WHERE id = ?').get(info.lastInsertRowid);
+  
   res.status(201).json(newTask);
 });
 
-// ============================================================
-// STAGE 4: Update (PUT) & Delete (DELETE)
-// ============================================================
-
-// PUT /tasks/:id – replace title and/or done status
+// ==========================================
+// STAGE 3: Update and delete
+// ==========================================
 app.put('/tasks/:id', (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const task = tasks.find(t => t.id === id);
-  if (!task) {
-    return res.status(404).json({ error: `Task ${id} not found` });
-  }
-
   const { title, done } = req.body;
-
-  // Validate title if provided
-  if (title !== undefined) {
-    if (typeof title !== 'string' || title.trim() === '') {
-      return res.status(400).json({
-        error: 'Title must be a non-empty string'
-      });
-    }
-    task.title = title.trim();
+  
+  // Basic validation
+  if (!title || typeof title !== 'string' || title.trim() === '' || typeof done !== 'boolean') {
+    return res.status(400).json({ error: 'Invalid body' });
   }
 
-  // Validate done if provided
-  if (done !== undefined) {
-    if (typeof done !== 'boolean') {
-      return res.status(400).json({
-        error: 'Done must be a boolean (true or false)'
-      });
-    }
-    task.done = done;
+  // Convert boolean to 1 or 0 for SQLite
+  const doneInt = done ? 1 : 0;
+  
+  const info = db.prepare('UPDATE tasks SET title = ?, done = ? WHERE id = ?').run(title, doneInt, req.params.id);
+  
+  // info.changes tells us how many rows were updated. If 0, the ID didn't exist.
+  if (info.changes === 0) {
+    return res.status(404).json({ error: 'Task not found' });
   }
 
-  res.json(task);
+  // Fetch the updated task to return it
+  const updatedTask = db.prepare('SELECT * FROM tasks WHERE id = ?').get(req.params.id);
+  res.status(200).json(updatedTask);
 });
 
-// DELETE /tasks/:id – remove a task
 app.delete('/tasks/:id', (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const index = tasks.findIndex(t => t.id === id);
-  if (index === -1) {
-    return res.status(404).json({ error: `Task ${id} not found` });
+  const info = db.prepare('DELETE FROM tasks WHERE id = ?').run(req.params.id);
+  
+  if (info.changes === 0) {
+    return res.status(404).json({ error: 'Task not found' });
   }
-
-  tasks.splice(index, 1);
-  res.status(204).send(); // No Content – empty body
+  
+  res.status(204).send();
 });
 
-// ============================================================
-// STAGE 5: Swagger UI at /docs
-// ============================================================
-
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// ============================================================
-// START THE SERVER
-// ============================================================
-
-app.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}`);
-  console.log(`📖 Swagger UI available at http://localhost:${port}/docs`);
+// ==========================================
+// Server Initialization
+// ==========================================
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
