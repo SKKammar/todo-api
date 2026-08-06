@@ -7,6 +7,7 @@
     "start": "node aiindex.js"
   },
   "dependencies": {
+    "better-sqlite3": "^13.0.3",
     "express": "^4.18.2",
     "swagger-ui-express": "^5.0.0"
   }
