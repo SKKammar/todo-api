@@ -124,3 +124,34 @@ I tested modifying the database directly in DB Browser using this query to find 
 This successfully returned one row (the seeded "Complete FlyRank Stage 0" task).
 
 *(Note: Don't forget to embed a screenshot of your DB Browser view here!)*
+
+## A3 — Containerized Postgres
+
+Run the stack locally with one command:
+```sh
+cp .env.example .env && docker compose up
+```
+
+### Environment Variables
+| Variable | Description |
+|---|---|
+| DATABASE_URL | PostgreSQL connection string |
+| PORT | Port for the Express server to listen on |
+
+### Endpoints
+| Method | Path | Request Body | Success Status | Error Statuses |
+|---|---|---|---|---|
+| GET | `/` | - | 200 | - |
+| GET | `/health` | - | 200 | - |
+| GET | `/tasks` | - | 200 | 500 |
+| GET | `/tasks/:id` | - | 200 | 404, 500 |
+| POST | `/tasks` | `{ "title": "string" }` | 201 | 400, 500 |
+| PUT | `/tasks/:id` | `{ "title": "string", "done": boolean }` | 200 | 400, 404, 500 |
+| DELETE | `/tasks/:id` | - | 204 | 404, 500 |
+
+Example request:
+```sh
+curl -i http://localhost:3000/tasks
+```
+
+[DB screenshot: paste psql SELECT * FROM tasks output here]
