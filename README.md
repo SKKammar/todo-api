@@ -1,6 +1,6 @@
-# ✅ Task API – Near Perfect CRUD To-Do List
+# ✅ Task API – Simple CRUD To-Do List
 
-This repository contains a meticulously crafted, **near-perfect RESTful API** built with **Node.js + Express** that manages a to-do list.  
+This repository contains a meticulously crafted, **simple RESTful API** built with **Node.js + Express** that manages a to-do list.  
 You can **C**reate, **R**ead, **U**pdate, and **D**elete tasks following the best practices of API design — all data is securely stored in a local **SQLite database**, ensuring it persists between server restarts.
 
 ---
@@ -123,8 +123,6 @@ I tested modifying the database directly in DB Browser using this query to find 
 `SELECT * FROM tasks WHERE done = 1;` 
 This successfully returned one row (the seeded "Complete FlyRank Stage 0" task).
 
-*(Note: Don't forget to embed a screenshot of your DB Browser view here!)*
-
 ## A3 — Containerized Postgres
 
 Run the stack locally with one command:
@@ -153,5 +151,3 @@ Example request:
 ```sh
 curl -i http://localhost:3000/tasks
 ```
-
-[DB screenshot: paste psql SELECT * FROM tasks output here]
