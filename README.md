@@ -36,31 +36,7 @@ Swagger UI (interactive docs) at **http://localhost:3000/docs**
 | PUT    | `/tasks/:id`   | Update a task (title and/or done)   | 200, 400, 404               |
 | DELETE | `/tasks/:id`   | Delete a task                       | 204, 404                    |
 
----
 
-## 🤖 AI Remake
-
-This repository also includes an `AI remake` folder. Unlike the rigorously coded main API, this alternative version was created entirely using **simple conversational prompts** based on my understanding and an **AI tool**. It demonstrates how a functional API can be rapidly scaffolded using artificial intelligence.
-
-### Quick Start for AI Remake
-
-```bash
-cd "AI remake"
-npm install
-node aiindex.js
-```
-
-The Swagger UI for the AI Remake is available at **http://localhost:3000/api-docs**.
-
-### Endpoints (AI Remake)
-
-| Method | Path           | Description                         | Status Codes                |
-| :----- | :------------- | :---------------------------------- | :-------------------------- |
-| GET    | `/task`        | List all tasks                      | 200                         |
-| GET    | `/task/:id`    | Get a single task by ID             | 200, 404                    |
-| POST   | `/task`        | Create a new task                   | 201, 400, 409               |
-| PUT    | `/task/:id`    | Update a task (title, status)       | 200, 400, 404               |
-| DELETE | `/task/:id`    | Delete a task                       | 204, 404                    |
 
 ---
 
