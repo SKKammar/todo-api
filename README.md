@@ -1,7 +1,7 @@
 # ✅ Task API – Near Perfect CRUD To-Do List
 
 This repository contains a meticulously crafted, **near-perfect RESTful API** built with **Node.js + Express** that manages a to-do list.  
-You can **C**reate, **R**ead, **U**pdate, and **D**elete tasks following the best practices of API design — all data is kept in memory (no database, so it resets when the server restarts).
+You can **C**reate, **R**ead, **U**pdate, and **D**elete tasks following the best practices of API design — all data is securely stored in a local **SQLite database**, ensuring it persists between server restarts.
 
 ---
 
@@ -82,8 +82,7 @@ curl -i -X DELETE http://localhost:3000/tasks/1
 
 ## 🧠 Lessons Learned
 
-- **Contrasting Development Approaches**: Building an API meticulously by hand ensures a deep understanding of core principles, while using AI tools can rapidly scaffold functional prototypes. Both approaches offer immense value in modern development.
-- **In-memory Storage Limits**: Managing data using a simple array is great for learning and prototyping, but it highlights the ephemeral nature of data—since it resets when the server restarts, a persistent database is essential for production environments.
+- **Database Persistence**: Transitioning from an in-memory array to a persistent SQLite database ensures that user data survives server restarts, which is essential for real-world production applications.
 - **Strict Data Validation**: The server must never implicitly trust client input. Enforcing strict type checks (e.g., verifying `id` is a number, `status` is a boolean) prevents bugs and ensures robust, reliable endpoints.
 - **API Documentation**: Whether writing an OpenAPI specification by hand or utilizing tools to generate a `swagger.json`, maintaining clear documentation is critical for defining the API's contract and facilitating easy testing via Swagger UI.
 
