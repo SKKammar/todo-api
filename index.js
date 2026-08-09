@@ -6,7 +6,6 @@ const fs = require('fs');
 const app = express();
 app.use(express.json());
 
-// Set up Swagger UI
 try {
   const openapiDocument = JSON.parse(fs.readFileSync('./openapi.json', 'utf8'));
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiDocument));
@@ -14,9 +13,6 @@ try {
   console.error("Failed to load openapi.json for Swagger UI:", err.message);
 }
 
-// ==========================================
-// Base API Endpoints
-// ==========================================
 app.get('/', (req, res) => {
   res.status(200).json({
     name: "Task API",
@@ -37,9 +33,6 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: "OK" });
 });
 
-// ==========================================
-// STAGE 0: Create database & seed data
-// ==========================================
 const db = new Database('tasks.db');
 
 db.exec(`
@@ -60,9 +53,6 @@ if (checkEmpty.count === 0) {
   console.log('Seeded database with 3 example tasks.');
 }
 
-// ==========================================
-// STAGE 1: Read from the database
-// ==========================================
 app.get('/tasks', (req, res) => {
   const tasks = db.prepare('SELECT * FROM tasks').all();
   res.status(200).json(tasks.map(t => ({ ...t, done: !!t.done })));
@@ -78,9 +68,6 @@ app.get('/tasks/:id', (req, res) => {
   res.status(200).json({ ...task, done: !!task.done });
 });
 
-// ==========================================
-// STAGE 2: Create new tasks
-// ==========================================
 app.post('/tasks', (req, res) => {
   const { title } = req.body;
   
@@ -88,18 +75,12 @@ app.post('/tasks', (req, res) => {
     return res.status(400).json({ error: 'Title is required and must be a non-empty string' });
   }
 
-  // Insert the task and get the metadata (like the newly generated ID)
   const info = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)').run(title, 0);
-  
-  // Fetch the newly created task to return it
   const newTask = db.prepare('SELECT * FROM tasks WHERE id = ?').get(info.lastInsertRowid);
   
   res.status(201).json({ ...newTask, done: !!newTask.done });
 });
 
-// ==========================================
-// STAGE 3: Update and delete
-// ==========================================
 app.put('/tasks/:id', (req, res) => {
   const { title, done } = req.body;
   
@@ -146,9 +127,6 @@ app.delete('/tasks/:id', (req, res) => {
   res.status(204).send();
 });
 
-// ==========================================
-// Server Initialization
-// ==========================================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
