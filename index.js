@@ -41,6 +41,7 @@ app.get('/tasks', async (req, res) => {
     const { rows } = await pool.query('SELECT * FROM tasks');
     res.status(200).json(rows.map(t => ({ ...t, done: !!t.done })));
   } catch (err) {
+    console.error('Error fetching tasks:', err);
     res.status(500).json({ error: 'Database error' });
   }
 });
@@ -58,6 +59,7 @@ app.get('/tasks/:id', async (req, res) => {
     
     res.status(200).json({ ...task, done: !!task.done });
   } catch (err) {
+    console.error('Error fetching task:', err);
     res.status(500).json({ error: 'Database error' });
   }
 });
@@ -78,6 +80,7 @@ app.post('/tasks', async (req, res) => {
     
     res.status(201).json({ ...newTask, done: !!newTask.done });
   } catch (err) {
+    console.error('Error creating task:', err);
     res.status(500).json({ error: 'Database error' });
   }
 });
@@ -124,6 +127,7 @@ app.put('/tasks/:id', async (req, res) => {
     const updatedTask = updatedRows[0];
     res.status(200).json({ ...updatedTask, done: !!updatedTask.done });
   } catch (err) {
+    console.error('Error updating task:', err);
     res.status(500).json({ error: 'Database error' });
   }
 });
@@ -140,11 +144,22 @@ app.delete('/tasks/:id', async (req, res) => {
     
     res.status(204).send();
   } catch (err) {
+    console.error('Error deleting task:', err);
     res.status(500).json({ error: 'Database error' });
   }
 });
 
 const PORT = process.env.PORT || 3000;
+
+// Global error handler for things like malformed JSON
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'Malformed JSON payload' });
+  }
+  console.error("Unhandled error:", err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
 init()
   .then(() => app.listen(PORT, () => console.log(`Server is running on port ${PORT}`)))
   .catch(err => { 

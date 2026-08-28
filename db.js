@@ -1,29 +1,35 @@
 import 'dotenv/config';
-import pg from 'pg';
-const { Pool } = pg;
+import Database from 'better-sqlite3';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+const db = new Database('tasks.db');
 
-async function init(retries = 5) {
-  while (retries) {
-    try {
-      await pool.query('SELECT 1'); // test connection
-      break;
-    } catch (err) {
-      retries -= 1;
-      console.log(`Database not ready, retrying... (${retries} attempts left)`);
-      if (retries === 0) throw err;
-      await new Promise(res => setTimeout(res, 2000));
+const pool = {
+  query: async (sql, params = []) => {
+    const sqliteSql = sql.replace(/\$\d+/g, '?');
+    const mappedParams = params.map(p => typeof p === 'boolean' ? (p ? 1 : 0) : p);
+    
+    const stmt = db.prepare(sqliteSql);
+    
+    if (sqliteSql.trim().toUpperCase().startsWith('SELECT') || sqliteSql.trim().toUpperCase().includes('RETURNING')) {
+      const rows = stmt.all(...mappedParams);
+      const mappedRows = rows.map(row => {
+        if ('done' in row) return { ...row, done: !!row.done };
+        return row;
+      });
+      return { rows: mappedRows, rowCount: mappedRows.length };
+    } else {
+      const info = stmt.run(...mappedParams);
+      return { rows: [], rowCount: info.changes };
     }
   }
+};
 
+async function init() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS tasks (
-      id SERIAL PRIMARY KEY,
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
-      done BOOLEAN NOT NULL DEFAULT false
+      done INTEGER NOT NULL DEFAULT 0
     )
   `);
 
@@ -34,14 +40,14 @@ async function init(retries = 5) {
     await pool.query(`
       INSERT INTO tasks (title, done) 
       VALUES 
-        ('Buy groceries', false),
-        ('Complete FlyRank Stage 0', true),
-        ('Read up on SQL injection', false)
+        ('Buy groceries', 0),
+        ('Complete FlyRank Stage 0', 1),
+        ('Read up on SQL injection', 0)
     `);
     console.log('Seeded database with 3 example tasks.');
   }
 
-  console.log('Database ready.');
+  console.log('Database ready (using SQLite).');
 }
 
 export { pool, init };

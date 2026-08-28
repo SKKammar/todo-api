@@ -65,7 +65,9 @@ export async function callWithRetry(userText, repairHint = null) {
         throw err;
       }
 
-      if (!RETRYABLE.has(status) || isLast) throw err;
+      // Retry on network errors (status 0) and specific HTTP status codes
+      if ((status !== 0 && !RETRYABLE.has(status)) || isLast) throw err;
+      
       const jitter = Math.random() * 500;
       await sleep(delays[attempt] + jitter);
     }
