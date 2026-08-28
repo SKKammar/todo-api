@@ -1,11 +1,13 @@
-require('dotenv').config();
-const express = require('express');
-const swaggerUi = require('swagger-ui-express');
-const fs = require('fs');
-const { pool, init } = require('./db');
+import 'dotenv/config';
+import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
+import { pool, init } from './db.js';
+import triageRouter from "./src/routes/triage.js";
 
 const app = express();
 app.use(express.json());
+app.use("/", triageRouter);
 
 try {
   const openapiDocument = JSON.parse(fs.readFileSync('./openapi.json', 'utf8'));

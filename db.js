@@ -1,5 +1,6 @@
-require('dotenv').config();
-const { Pool } = require('pg');
+import 'dotenv/config';
+import pg from 'pg';
+const { Pool } = pg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -43,4 +44,4 @@ async function init(retries = 5) {
   console.log('Database ready.');
 }
 
-module.exports = { pool, init };
+export { pool, init };
