@@ -1,6 +1,7 @@
 {
   "name": "todo-api",
   "version": "1.0.0",
+  "type": "module",
   "description": "A simple CRUD API for managing a to-do list",
   "main": "index.js",
   "scripts": {
@@ -10,7 +11,9 @@
     "better-sqlite3": "^13.0.3",
     "dotenv": "^16.0.0",
     "express": "^4.22.2",
+    "openai": "^7.8.0",
     "pg": "^8.11.0",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "zod": "^4.4.3"
   }
 }
