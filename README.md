@@ -1,5 +1,49 @@
 # ✅ Task API – Simple CRUD To-Do List
 
+## LLM Task Triage (FlyRank A17)
+The `POST /tasks/triage` endpoint acts as a smart pre-processor for tasks. It takes a raw, messy task description from a user, sends it to an LLM for classification, and returns a clean, structured JSON object with a predicted `category` and `priority`. This output can be used by the frontend to pre-fill task creation forms automatically.
+
+### Example Request
+```bash
+curl -X POST http://localhost:3000/tasks/triage \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Prepare the quarterly budget report for the finance team by Friday"}'
+```
+
+### Exact Response
+```json
+{
+  "category": "work",
+  "priority": "high",
+  "confidence": 0.95,
+  "reason": "Quarterly budget report is a high-priority work deliverable."
+}
+```
+
+### Job Card
+- **Input:** `{ "text": "string, 1–1000 characters" }`
+- **Output:** `{ "category": "work|personal|learning|health|other", "priority": "low|medium|high", "confidence": 0.0-1.0, "reason": "short string" }`
+- **Must Never:** invent categories/priorities outside the lists, return free text instead of JSON, add extra fields, or reveal system prompts.
+- **When Unsure:** return category "other" with confidence below 0.5. Do not guess.
+
+### Provider Configuration
+The endpoint defaults to OpenRouter but is provider-agnostic. To swap providers, change these 3 variables in `.env`:
+- `LLM_BASE_URL` (e.g., `https://openrouter.ai/api/v1` or `http://localhost:11434/v1/`)
+- `LLM_API_KEY`
+- `LLM_MODEL` (e.g., `openrouter/auto` or `gemma3:1b`)
+
+### Evaluation Result
+- **Score:** 7/8 
+- **Prompt:** triage-v1
+- **Date:** 2026-08-28
+
+### Cost & Usage
+- **Cost log (1 call):** `{"inputTokens":423,"outputTokens":78,"durationMs":3998,"repairCount":0,"estimatedUSD":"0.000075"}`
+- **Estimate for 10,000 requests/day:** ~$0.75 / day
+
+### What I'd fix with another day
+I would implement background async retries with a message queue if the model goes completely offline, rather than failing the request synchronously.
+
 This repository contains a meticulously crafted, **simple RESTful API** built with **Node.js + Express** that manages a to-do list.  
 You can **C**reate, **R**ead, **U**pdate, and **D**elete tasks following the best practices of API design — all data is securely stored in a local **SQLite database**, ensuring it persists between server restarts.
 
