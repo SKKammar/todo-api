@@ -45,7 +45,7 @@ The endpoint defaults to OpenRouter but is provider-agnostic. To swap providers,
 I would implement background async retries with a message queue if the model goes completely offline, rather than failing the request synchronously.
 
 This repository contains a meticulously crafted, **simple RESTful API** built with **Node.js + Express** that manages a to-do list.  
-You can **C**reate, **R**ead, **U**pdate, and **D**elete tasks following the best practices of API design — all data is securely stored in a local **SQLite database**, ensuring it persists between server restarts.
+You can **C**reate, **R**ead, **U**pdate, and **D**elete tasks following the best practices of API design — all data is securely stored in a **PostgreSQL database**, ensuring it persists between server restarts.
 
 ---
 
@@ -195,3 +195,14 @@ Example request:
 ```sh
 curl -i http://localhost:3000/tasks
 ```
+
+---
+
+## 🌍 Production Deployment (Render)
+
+This application is ready to be deployed to platforms like **Render**. 
+
+**Important Deployment Notes:**
+1. **Environment Variables:** Your `.env` file is intentionally ignored by Git (via `.gitignore`). When deploying to production, you must manually add your environment variables (like `DATABASE_URL`, `LLM_API_KEY`, etc.) in the hosting provider's dashboard.
+2. **Database Provisioning:** For Render, you must create a separate PostgreSQL database instance. Once created, copy the **Internal Database URL** and set it as the `DATABASE_URL` environment variable for your Web Service. If this is not set, the app will attempt to connect to `localhost` and crash.
+3. **Swagger UI:** The Swagger UI (`/docs`) is configured to use relative paths. This ensures the "Try it out" buttons work flawlessly in production without triggering CORS errors.
