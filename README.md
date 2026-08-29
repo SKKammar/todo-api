@@ -1,6 +1,6 @@
 # ✅ Task API – Simple CRUD To-Do List
 
-## LLM Task Triage (FlyRank A17)
+## LLM Task Triage
 The `POST /tasks/triage` endpoint acts as a smart pre-processor for tasks. It takes a raw, messy task description from a user, sends it to an LLM for classification, and returns a clean, structured JSON object with a predicted `category` and `priority`. This output can be used by the frontend to pre-fill task creation forms automatically.
 
 ### Example Request
