@@ -53,7 +53,7 @@ You can **C**reate, **R**ead, **U**pdate, and **D**elete tasks following the bes
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/todo-api.git
+git clone https://github.com/SKKammar/todo-api.git
 cd todo-api
 
 # 2. Install dependencies
